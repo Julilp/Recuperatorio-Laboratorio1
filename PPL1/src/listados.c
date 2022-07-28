@@ -12,7 +12,7 @@
 
 #include "validaciones.h"
 
-void subMenuListar(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[],eEnfermera ListaEnfermeras[],eEspecialidad listaEspecialidades[]){//SUB MENU LISTADOS
+void subMenuListar(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[],eEnfermera ListaEnfermeras[],eEspecialidad listaEspecialidades[],eLocalidad listaDeLocalidades[]){//SUB MENU LISTADOS
 
 	int opcion;
 
@@ -34,27 +34,27 @@ void subMenuListar(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnost
 		listarTodosMedicos(listaMedicos,listaEspecialidades);
 	break;
 	case 2:
-		mostrarConsultas( listaDeConsultas, listaMedicos, diagnosticos,TAM,ListaEnfermeras,listaEspecialidades);
+		mostrarConsultas( listaDeConsultas, listaMedicos, diagnosticos,TAM,ListaEnfermeras,listaEspecialidades,listaDeLocalidades);
 	break;
 	case 3:
 		listarMedicosConConsultas(listaMedicos, listaDeConsultas, TAM);
 	break;
 	case 4:
 		ordenamientoFecha(listaDeConsultas, listaMedicos, diagnosticos, TAM);
-		mostrarConsultas( listaDeConsultas, listaMedicos, diagnosticos,TAM,ListaEnfermeras,listaEspecialidades);
+		mostrarConsultas( listaDeConsultas, listaMedicos, diagnosticos,TAM,ListaEnfermeras,listaEspecialidades,listaDeLocalidades);
 	break;
 	case 5:
-		consultasDiagnosticadas(listaDeConsultas, listaMedicos, diagnosticos, TAM,ListaEnfermeras,listaEspecialidades);
+		consultasDiagnosticadas(listaDeConsultas, listaMedicos, diagnosticos, TAM,ListaEnfermeras,listaEspecialidades,listaDeLocalidades);
 	break;
 	case 6:
-		 DiagnosticosCovidYEspecialidad(listaDeConsultas, listaMedicos, diagnosticos, TAM,ListaEnfermeras,listaEspecialidades);
+		 DiagnosticosCovidYEspecialidad(listaDeConsultas, listaMedicos, diagnosticos, TAM,ListaEnfermeras,listaEspecialidades,listaDeLocalidades);
 	break;
 	case 7:
 		ordenamientoAlfabeticoEspecialidad(listaDeConsultas, listaMedicos, diagnosticos, TAM,listaEspecialidades);
-		mostrarConsultas( listaDeConsultas, listaMedicos, diagnosticos,TAM,ListaEnfermeras,listaEspecialidades);
+		mostrarConsultas( listaDeConsultas, listaMedicos, diagnosticos,TAM,ListaEnfermeras,listaEspecialidades,listaDeLocalidades);
 	break;
 	case 8:
-		DiagnosticosEntreMeses(listaDeConsultas, listaMedicos, diagnosticos, TAM,ListaEnfermeras,listaEspecialidades);
+		DiagnosticosEntreMeses(listaDeConsultas, listaMedicos, diagnosticos, TAM,ListaEnfermeras,listaEspecialidades,listaDeLocalidades);
 	break;
 	case 9:
 		porcentajeYDatos(listaDeConsultas, listaMedicos, diagnosticos, TAM,listaEspecialidades);
@@ -73,13 +73,14 @@ void listarTodosMedicos (eMedico listaMedicos[],eEspecialidad listaEspecialidade
 		printf("|Id: %d |Nombre: %15s |Especialidad:%15s| \n",listaMedicos[i].idMedico,listaMedicos[i].nombre,listaEspecialidades[especialidad].descripcion);
 	}
 }
-void mostrarUnaConsulta(eConsulta listaDeConsultas,eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[])//LISTADO B1
+void mostrarUnaConsulta(eConsulta listaDeConsultas,eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[],eLocalidad listaDeLocalidades[])//LISTADO B1
 {
 
 	int consultaTipo;
 	int medico;
 	int enfermera;
 	int especialidad;
+	int localidad;
 	if(listaDeConsultas.id>0 )
 	{
 
@@ -87,23 +88,24 @@ void mostrarUnaConsulta(eConsulta listaDeConsultas,eMedico listaMedicos[],eDiagn
 		consultaTipo=descripcionConsulta( listaDeConsultas, diagnosticos,4);
 		enfermera=posicionEnfermera(listaEnfermeras, listaDeConsultas);
 		especialidad=obtenerEspecialidad(listaMedicos[medico], listaEspecialidades);
+		localidad=obtenerLocalidad(listaDeConsultas,listaDeLocalidades);
 
 		printf(
-				" |%4d   |       %12s      |        %8s       |       %2d/%2d/%4d    |     %15s     |        %15s         |        %13s     |         %16s       |     %14.2f           |\n"
-				,listaDeConsultas.id ,listaDeConsultas.lastName,listaDeConsultas.name,listaDeConsultas.fecha.dia,listaDeConsultas.fecha.mes,listaDeConsultas.fecha.anio,diagnosticos[consultaTipo].descripcion,listaMedicos[medico].nombre,listaEspecialidades[especialidad].descripcion,listaEnfermeras[enfermera].nombre,listaEnfermeras[enfermera].horasDiarias);
+				" |%4d   |       %12s      |        %8s       |       %2d/%2d/%4d    |     %15s     |        %15s         |        %20s     |         %16s       |     %14.2f           |%20s     |\n"
+				,listaDeConsultas.id ,listaDeConsultas.lastName,listaDeConsultas.name,listaDeConsultas.fecha.dia,listaDeConsultas.fecha.mes,listaDeConsultas.fecha.anio,diagnosticos[consultaTipo].descripcion,listaMedicos[medico].nombre,listaEspecialidades[especialidad].descripcion,listaEnfermeras[enfermera].nombre,listaEnfermeras[enfermera].horasDiarias,listaDeLocalidades[localidad].descripcionLocalidad);
 
 	}
 }
-void mostrarConsultas(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[])//LISTADO B2
+void mostrarConsultas(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[],eLocalidad listaDeLocalidades[])//LISTADO B2
 {
 	indice();
 	for (int i=0;i<tam;i++)
 	{
 		if(listaDeConsultas[i].iniciar==1){
-			mostrarUnaConsulta(listaDeConsultas[i], listaMedicos, diagnosticos, tam, listaEnfermeras,listaEspecialidades);
+			mostrarUnaConsulta(listaDeConsultas[i], listaMedicos, diagnosticos, tam, listaEnfermeras,listaEspecialidades,listaDeLocalidades);
 		}
 	}
-	printf(" |_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________|\n");
+	printf(" |______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|\n");
 
 
 }
@@ -150,21 +152,22 @@ void ordenamientoFecha(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiag
 		}
 	}
 }
-void consultasDiagnosticadas(eConsulta listaConsulta[], eMedico listaMedicos[],eDiagnostico diagnosticos[],int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[]){//LISTADO E
+void consultasDiagnosticadas(eConsulta listaConsulta[], eMedico listaMedicos[],eDiagnostico diagnosticos[],int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[],eLocalidad listaDeLocalidades[]){//LISTADO E
 	indice();
 		for (int i=0;i<tam;i++)
 		{
 			if(listaDeConsultas[i].iniciar==1){
-				mostrarUnDiagnostico(listaDeConsultas[i], listaMedicos, diagnosticos, tam,listaEnfermeras,listaEspecialidades);
+				mostrarUnDiagnostico(listaDeConsultas[i], listaMedicos, diagnosticos, tam,listaEnfermeras,listaEspecialidades,listaDeLocalidades);
 			}
 		}
-		printf(" |_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________|\n");
+		printf(" |______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|\n");
 }
-void mostrarUnDiagnostico (eConsulta listaDeConsultas,eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidad[]){//LISTADO E
+void mostrarUnDiagnostico (eConsulta listaDeConsultas,eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidad[], eLocalidad listaDeLocalidades[]){//LISTADO E
 	int consultaTipo;
 	int medico;
 	int enfermera;
 	int especialidad;
+	int localidad;
 		if(listaDeConsultas.estadoDeConsulta==ATENDIDO)
 		{
 
@@ -172,46 +175,47 @@ void mostrarUnDiagnostico (eConsulta listaDeConsultas,eMedico listaMedicos[],eDi
 				consultaTipo=descripcionConsulta( listaDeConsultas, diagnosticos,4);
 				enfermera=posicionEnfermera(listaEnfermeras, listaDeConsultas);
 				especialidad=obtenerEspecialidad(listaMedicos[medico], listaEspecialidad);
+				localidad=obtenerLocalidad(listaDeConsultas, listaDeLocalidades);
 
 				printf(
-						" |%4d   |       %12s      |        %8s       |       %2d/%2d/%4d    |     %15s     |        %15s         |        %13s     |         %16s       |     %14.2f           |\n"
-						,listaDeConsultas.id ,listaDeConsultas.lastName,listaDeConsultas.name,listaDeConsultas.fecha.dia,listaDeConsultas.fecha.mes,listaDeConsultas.fecha.anio,diagnosticos[consultaTipo].descripcion,listaMedicos[medico].nombre,listaEspecialidad[especialidad].descripcion,listaEnfermeras[enfermera].nombre,listaEnfermeras[enfermera].horasDiarias);
+						" |%4d   |       %12s      |        %8s       |       %2d/%2d/%4d    |     %15s     |        %15s         |        %13s     |         %16s       |     %14.2f                  |%20s     |\n"
+						,listaDeConsultas.id ,listaDeConsultas.lastName,listaDeConsultas.name,listaDeConsultas.fecha.dia,listaDeConsultas.fecha.mes,listaDeConsultas.fecha.anio,diagnosticos[consultaTipo].descripcion,listaMedicos[medico].nombre,listaEspecialidad[especialidad].descripcion,listaEnfermeras[enfermera].nombre,listaEnfermeras[enfermera].horasDiarias,listaDeLocalidades[localidad].descripcionLocalidad);
 
 		}
 }
-void DiagnosticosCovidYEspecialidad(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermera[],eEspecialidad listaEspecialidades[]){//LISTADO F
+void DiagnosticosCovidYEspecialidad(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermera[],eEspecialidad listaEspecialidades[], eLocalidad listaDeLocalidades[]){//LISTADO F
 
 	int especialidad;
-
 
 
 	printf("---------------ELEGIR UNA ESPECIALIDAD---------------\n");
 	printf("   1.Cardiologo     2.Neumonologo     3.Traumatologa \n");
 	especialidad=IngresarEntero("ingresar opcion: ", 1, 3);
 
-	unaComparacion(listaDeConsultas, listaMedicos, diagnosticos, tam, especialidad,listaEnfermera,listaEspecialidades);
+	unaComparacion(listaDeConsultas, listaMedicos, diagnosticos, tam, especialidad,listaEnfermera,listaEspecialidades,listaDeLocalidades);
 
 
 
 }
-void unaComparacion(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,int especialidad,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[]){//LISTADO F
+void unaComparacion(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,int especialidad,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[], eLocalidad listaDeLocalidades[]){//LISTADO F
 	indice();
 		for (int i=0;i<tam;i++)
 		{
 			if(listaDeConsultas[i].iniciar==1 && listaDeConsultas[i].idDiagnostico==2){
 				if(listaDeConsultas[i].fecha.anio>2019){
-					printEspecialidadComparada(listaDeConsultas[i], listaMedicos, diagnosticos, tam,especialidad,listaEnfermeras,listaEspecialidades);
+					printEspecialidadComparada(listaDeConsultas[i], listaMedicos, diagnosticos, tam,especialidad,listaEnfermeras,listaEspecialidades,listaDeLocalidades);
 				}
 			}
 		}
-		printf(" |_____________________________________________________________________________________________________________________________________________________________________|\n");
+		printf(" |______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|\n");
 }
-void printEspecialidadComparada(eConsulta listaDeConsultas,eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,int especialidad,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[]){//LISTADO F Y H
+void printEspecialidadComparada(eConsulta listaDeConsultas,eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,int especialidad,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[], eLocalidad listaDeLocalidades[]){//LISTADO F Y H
 	int referencia;
 	int consultaTipo;
 	int medico;
 	int enfermera;
 	int indexEspecialidad;
+	int localidad;
 
 	referencia=listaDeConsultas.idMedicoAtendido;
 	for (int i=0;i<4;i++){
@@ -220,9 +224,10 @@ void printEspecialidadComparada(eConsulta listaDeConsultas,eMedico listaMedicos[
 			consultaTipo=descripcionConsulta( listaDeConsultas, diagnosticos,4);
 			enfermera=posicionEnfermera(listaEnfermeras, listaDeConsultas);
 			indexEspecialidad=obtenerEspecialidad(listaMedicos[medico], listaEspecialidades);
+			localidad=obtenerLocalidad(listaDeConsultas, listaDeLocalidades);
 			printf(
-					" |%4d   |       %12s      |        %8s       |       %2d/%2d/%4d    |     %15s     |        %15s         |        %13s     |         %16s       |     %14.2f           |\n"
-					,listaDeConsultas.id ,listaDeConsultas.lastName,listaDeConsultas.name,listaDeConsultas.fecha.dia,listaDeConsultas.fecha.mes,listaDeConsultas.fecha.anio,diagnosticos[consultaTipo].descripcion,listaMedicos[medico].nombre,listaEspecialidades[indexEspecialidad].descripcion,listaEnfermeras[enfermera].nombre,listaEnfermeras[enfermera].horasDiarias);
+					" |%4d   |       %12s      |        %8s       |       %2d/%2d/%4d    |     %15s     |        %15s         |        %13s     |         %16s       |     %14.2f                  |%20s     |\n"
+					,listaDeConsultas.id ,listaDeConsultas.lastName,listaDeConsultas.name,listaDeConsultas.fecha.dia,listaDeConsultas.fecha.mes,listaDeConsultas.fecha.anio,diagnosticos[consultaTipo].descripcion,listaMedicos[medico].nombre,listaEspecialidades[indexEspecialidad].descripcion,listaEnfermeras[enfermera].nombre,listaEnfermeras[enfermera].horasDiarias,listaDeLocalidades[localidad].descripcionLocalidad);
 
 		}
 	}
@@ -249,22 +254,22 @@ void ordenamientoAlfabeticoEspecialidad(eConsulta listaDeConsultas[],eMedico lis
 		}
 	}
 }
-void consultasEntreMeses(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,int mes1,int mes2,int especialidad,eEnfermera listaEnfermera[],eEspecialidad listaEspecialidades[]){//LISTADO H
+void consultasEntreMeses(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,int mes1,int mes2,int especialidad,eEnfermera listaEnfermera[],eEspecialidad listaEspecialidades[],eLocalidad listaDelocalidades[]){//LISTADO H
 
 	indice();
 	//printf("hola");
 	for (int i=0;i<tam;i++)
 	{
 		if(listaDeConsultas[i].fecha.mes>mes1 && listaDeConsultas[i].fecha.mes<mes2){
-			printEspecialidadComparada(listaDeConsultas[i], listaMedicos, diagnosticos, tam,especialidad,listaEnfermera,listaEspecialidades);
+			printEspecialidadComparada(listaDeConsultas[i], listaMedicos, diagnosticos, tam,especialidad,listaEnfermera,listaEspecialidades,listaDelocalidades);
 		}
 	}
-	printf(" |_____________________________________________________________________________________________________________________________________________________________________|\n");
+	printf(" |___________________________________________________________________________________________________________________________________________________________________________________________________________________________|\n");
 
 
 
 }
-void DiagnosticosEntreMeses(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[]){//LISTADO H
+void DiagnosticosEntreMeses(eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[],eLocalidad listaDeLocalidades[]){//LISTADO H
 
 	int especialidad;
 
@@ -272,7 +277,7 @@ void DiagnosticosEntreMeses(eConsulta listaDeConsultas[],eMedico listaMedicos[],
 	printf("---------------ELEGIR UNA ESPECIALIDAD---------------\n");
 	printf("   1.Cardiologo     2.Neumonologo     3.Traumatologa \n");
 	especialidad=IngresarEntero("ingresar opcion: ", 1, 3);
-	unaComparacion(listaDeConsultas, listaMedicos, diagnosticos, tam, especialidad,listaEnfermeras,listaEspecialidades);
+	unaComparacion(listaDeConsultas, listaMedicos, diagnosticos, tam, especialidad,listaEnfermeras,listaEspecialidades,listaDeLocalidades);
 
 }
 void porcentajeYDatos (eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEspecialidad listaEspecialidades[]){

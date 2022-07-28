@@ -27,7 +27,8 @@ int main(void)
 	eDiagnostico diagnosticos[4];
 	eEspecialidad listaEspecialidades[4];
 	eMedico listaMedicos [4];
-	datosHardcodeadas(listaMedicos, listaEspecialidades, listaEnfermeras, diagnosticos);
+	eLocalidad listaDeLocalidades [4];
+	datosHardcodeadas(listaMedicos, listaEspecialidades, listaEnfermeras, diagnosticos,listaDeLocalidades);
 	consultasHardcodeadas(listaDeConsultas);
 	do
 	{
@@ -71,7 +72,7 @@ int main(void)
 		case 4:
 			if(bandera==1)
 			{
-				diagnosticar ( listaDeConsultas, listaMedicos, diagnosticos, TAM,listaEnfermeras,listaEspecialidades);
+				diagnosticar ( listaDeConsultas, listaMedicos, diagnosticos, TAM,listaEnfermeras,listaEspecialidades,listaDeLocalidades);
 			}
 			else
 			{
@@ -79,7 +80,7 @@ int main(void)
 			}
 		break;
 		case 5:
-				subMenuListar(listaDeConsultas, listaMedicos, diagnosticos,listaEnfermeras,listaEspecialidades);
+				subMenuListar(listaDeConsultas, listaMedicos, diagnosticos,listaEnfermeras,listaEspecialidades,listaDeLocalidades);
 		break;
 
 

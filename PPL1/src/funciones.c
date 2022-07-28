@@ -55,6 +55,7 @@ int pedirDatos(eConsulta listaDeConsultas[],int tam)
 	char nombre[51];
 	char apellido[51];
 	int estadoDeConsulta;
+	int idLocalidad;
 	int id;
 	int dia=0;
 	int mes=0;
@@ -71,9 +72,10 @@ int pedirDatos(eConsulta listaDeConsultas[],int tam)
 	dia=IngresarEntero("ingrese el dia: ", 1, 31);
 	mes=pedirFecha (dia);
 	anio=IngresarEntero("ingrese el año (desde 2010 hasta 2025)", 2010, 2025);
+	idLocalidad=IngresarEntero("1.Esteban Echeverria\n2.Ezeiza\n3.San Vicente\n4.Lomas De Zamora\ningrese su localidad:", 1, 4);
 	estadoDeConsulta=ESPERA;
 
-	cargarDatos (listaDeConsultas,nombre,apellido,estadoDeConsulta,id,dia,mes,anio,TAM,inicio);
+	cargarDatos (listaDeConsultas,nombre,apellido,estadoDeConsulta,id,dia,mes,anio,TAM,inicio,idLocalidad);
 
 	return retorno;
 }
@@ -125,7 +127,7 @@ int obtenerID()
 	static int idIncremental = 1000;
 	return idIncremental++;
 }
-void cargarDatos (eConsulta listaDeConsultas[],char nombre[],char apellido[],int estadoDeConsulta,int id,int dia,int mes,int anio,int tam,int inicio)
+void cargarDatos (eConsulta listaDeConsultas[],char nombre[],char apellido[],int estadoDeConsulta,int id,int dia,int mes,int anio,int tam,int inicio,int idLocalidad)
 {
 
 	int index;
@@ -139,6 +141,7 @@ void cargarDatos (eConsulta listaDeConsultas[],char nombre[],char apellido[],int
 	listaDeConsultas[index].fecha.mes=mes;
 	listaDeConsultas[index].fecha.anio=anio;
 	listaDeConsultas[index].iniciar=inicio;
+	listaDeConsultas[index].idLocalidad=idLocalidad;
 
 
 
@@ -307,7 +310,7 @@ void bajaDeConsulta(eConsulta listaDeConsultas[], int tam)
 		return index;
 	}
 
-void diagnosticar (eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[]){
+void diagnosticar (eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnostico diagnosticos[], int tam,eEnfermera listaEnfermeras[],eEspecialidad listaEspecialidades[],eLocalidad listalocalidades[]){
 	int idMedico;
 	int idPaciente;
 	int index;
@@ -325,7 +328,7 @@ void diagnosticar (eConsulta listaDeConsultas[],eMedico listaMedicos[],eDiagnost
 	{
 		if(listaDeConsultas[i].idDiagnostico==0 && listaDeConsultas[i].estadoDeConsulta==ESPERA)
 		{
-			mostrarUnaConsulta(listaDeConsultas[i], listaMedicos, diagnosticos, tam,listaEnfermeras,listaEspecialidades);
+			mostrarUnaConsulta(listaDeConsultas[i], listaMedicos, diagnosticos, tam,listaEnfermeras,listaEspecialidades,listalocalidades);
 		}
 	}
 	printf(" |_____________________________________________________________________________________________________________________________________________________________________|\n");
@@ -387,9 +390,9 @@ int buscarIDNoAtendido (eConsulta listaDeConsultas[], int tam,int id)
 }
 void indice()
 {
-	printf( "  ____________________________________________________________________________________________________________________________________________________________________________________________________________________________________\n "
-			"|  ID   |      APELLIDO           |         NOMBRE        |        FECHA       |       DIAGNOSTICO       |      MEDICO A CARGO            |     ESPECIALIDAD MEDICO   |      ENFERMERA A CARGO         |       HORAS TRABAJADAS       |\n");
-	printf( " |_______|_________________________|_______________________|____________________|_________________________|________________________________|___________________________|________________________________|______________________________|\n");
+	printf( "  _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________\n "
+			"|  ID   |      APELLIDO           |         NOMBRE        |        FECHA       |       DIAGNOSTICO       |      MEDICO A CARGO            |     ESPECIALIDAD MEDICO   |      ENFERMERA A CARGO         |       HORAS TRABAJADAS              |       LOCALIDAD         |\n");
+	printf( " |_______|_________________________|_______________________|____________________|_________________________|________________________________|___________________________|________________________________|_____________________________________|_________________________|\n");
 }
 
 int setMedicoAConsulta(eConsulta listaDeConsultas[],int idMedico,int index, int diagnostico,int idEnfermera){
@@ -434,7 +437,17 @@ int obtenerEspecialidad(eMedico listaMedicos,eEspecialidad listaEspecialidades[]
 	}
 	return index;
 }
-void datosHardcodeadas(eMedico listaMedicos[],eEspecialidad listaEspecialidades[],eEnfermera listaEnfermeras[],eDiagnostico listaDiagnosticos[]){
+int obtenerLocalidad(eConsulta listaConsultas,eLocalidad ListaDeLocalidades []){
+	int index;
+	for(int i=0;i<4;i++){
+		if(listaConsultas.idLocalidad==ListaDeLocalidades[i].idLocalidad){
+			index=i;
+			break;
+		}
+	}
+	return index;
+}
+void datosHardcodeadas(eMedico listaMedicos[],eEspecialidad listaEspecialidades[],eEnfermera listaEnfermeras[],eDiagnostico listaDiagnosticos[], eLocalidad listaDeLocalidades[]){
 	int size=4;
 	eEnfermera harcodeEnfermeras[4]={{0,"Sin Enfermera"   ,0},
 									   {1,"Martina Sanchez" ,9},
@@ -456,12 +469,18 @@ void datosHardcodeadas(eMedico listaMedicos[],eEspecialidad listaEspecialidades[
 								  {101,"Fernan Martinez",2},
 								  {102,"Martina Farias" ,3}};
 
+	eLocalidad harcodeDeLocalidades [4]={{1, "Esteban Echeverria", 1842},
+									     {2, "Ezeiza"            , 1804},
+	                                     {3, "San Vicente"       , 1865},
+	                                     {4, "Lomas De Zamora"   , 1832}};
+
 
 	for (int i=0;i<size;i++){
 		listaMedicos[i]=harcodeoMedicos[i];
 		listaEspecialidades[i]=HarcodeoEspecialidades[i];
 		listaEnfermeras[i]=harcodeEnfermeras[i];
 		listaDiagnosticos[i]=harcodeoDiagnosticos[i];
+		listaDeLocalidades[i]=harcodeDeLocalidades[i];
 	}
 	/*eConsulta hardcodeo [4]={{001,"Julian" ,"Lopez"    ,{18,05,2020},1,ATENDIDO,101,1,0},
 							 {002,"Franco" ,"Mendez"   ,{14,02,2020},2,ATENDIDO,100,1,2},
